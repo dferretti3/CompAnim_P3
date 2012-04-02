@@ -45,6 +45,7 @@ public:
 	
 	NxActor* CreateBlade(const NxVec3& pos, const NxVec3& boxDim, const NxReal mass);
 	NxActor* CreateBall(const NxVec3& pos, const NxReal radius, const NxReal mass);	
+	NxActor* CreateEmptyBall(const NxVec3& pos, const NxReal radius);
 	
 	NxFixedJoint* CreateFixedJoint(NxActor* a0, NxActor* a1, const NxVec3& globalAnchor, const NxVec3& globalAxis);
 	NxRevoluteJoint* CreateRevoluteJoint(NxActor* a0, NxActor* a1, const NxVec3& globalAnchor, const NxVec3& globalAxis);

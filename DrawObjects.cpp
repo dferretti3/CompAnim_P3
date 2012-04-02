@@ -11,6 +11,11 @@ static float gPlaneData[]={
 	1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f
 };
 
+static NxVec3 COLORS[] = {
+	NxVec3(1,0,0),
+	NxVec3(0,1,0),
+	NxVec3(0,0,1)};
+
 /*
 
     v[0][0] = v[1][0] = v[2][0] = v[3][0] = -size / 2;
@@ -124,6 +129,53 @@ static float gCylinderDataCapsBottom[]={
 	0.000000f,0.000000f,0.000000f,0.000000f,-1.000000f,0.000000f,
 	1.000000f,0.000000f,0.000000f,0.000000f,-1.000000f,0.000000f,
 };
+
+void PrintText(char * String, float x, float y, float r, float g, float B)
+{
+	glPushMatrix();
+	glLoadIdentity();
+    glColor3f(r, g, B);
+    //glRasterPos2i(x, y);
+	glTranslatef(x,y,0);
+    for (int i = 0; i <= strlen(String); i++)
+    {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, String[i]);
+    }
+	glPopMatrix();
+    return;
+}
+
+void beginText()
+{
+	glDisable(GL_LIGHTING);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0,512,0,512);
+	glMatrixMode(GL_MODELVIEW);
+}
+void endText()
+{
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glEnable(GL_LIGHTING);
+}
+void printText(double x, double y, char*str)
+{
+	glColor3d(1,0,0);
+	glRasterPos3d(x,y,0);
+	for (char *c=str;*c!=0; c++)
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24,*c);
+}
+void drawText(double x, double y, char* str)
+{
+	//glClear(GL_COLOR_BUFFER_BIT);
+	
+	beginText();
+	printText(x,y,str);
+	endText();
+}
 
 static void RenderPlane()
 {
@@ -479,6 +531,7 @@ void DrawBox(NxShape* box, const NxVec3& color)
 	SetupGLMatrix(pose.t, pose.M);
 	NxVec3 boxDim = box->isBox()->getDimensions();
 	glScalef(boxDim.x, boxDim.y, boxDim.z);
+	glColor3d(color.x,color.y,color.z);
 	RenderBox(2.0);
 	glPopMatrix();
 }
@@ -1111,16 +1164,19 @@ void DrawActor(NxActor* actor, NxActor* gSelectedActor)
 	while (nShapes--)
 	{
 		NxVec3 color = defaultColor;
-		if (actor->isDynamic())
-		{
-			if (actor->readBodyFlag(NX_BF_KINEMATIC))
+		if (actor->userData!=0) {
+				color = COLORS[((int)actor->userData)-1];
+		}
+		//if (actor->isDynamic())
+		//{
+			/*if (actor->readBodyFlag(NX_BF_KINEMATIC))
 				color = kinematicColor;
 			else
 				if (actor->isSleeping())
 					color = dynamicSleepingColor;
 				else
-					color = dynamicActiveColor;
-		}
+					color = dynamicActiveColor;*/
+		//}
 		DrawShape(shapes[nShapes], color);
 	}
 }

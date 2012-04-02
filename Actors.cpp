@@ -185,12 +185,19 @@ NxActor* Actors::CreatePyramid(const NxVec3& pos, const NxVec3& boxDim, const Nx
 
 	// The actor has one shape, a triangle mesh
 	NxConvexShapeDesc convexShapeDesc;
-//	convexShapeDesc.meshData = mPhysicsSDK->createConvexMesh(convexDesc);
+	////convexShapeDesc.meshData = mPhysicsSDK->createConvexMesh(convexDesc);
 	InitCooking();
 	UserStream upstream = UserStream("c:\\tmp.bin", false);
 	UserStream downstream = UserStream("c:\\tmp.bin", true);
 	bool status = CookConvexMesh(convexDesc, upstream);
 	convexShapeDesc.meshData = mPhysicsSDK->createConvexMesh(downstream);
+	/*MemoryWriteBuffer buf;
+	NxConvexShapeDesc convexShapeDesc;
+	if(CookConvexMesh(convexDesc, buf))
+	{
+
+		convexShapeDesc.meshData = mPhysicsSDK->createConvexMesh(MemoryReadBuffer(buf.data));
+	}*/
 
 	convexShapeDesc.localPose.t = NxVec3(0,boxDim.y,0);
 	actorDesc.shapes.pushBack(&convexShapeDesc);
@@ -1016,6 +1023,29 @@ NxActor* Actors::CreateBall(const NxVec3& pos, const NxReal radius, const NxReal
 	}
 	actorDesc.globalPose.t = pos;
 	return mScene->createActor(actorDesc);	
+}
+
+NxActor* Actors::CreateEmptyBall(const NxVec3& pos, const NxReal radius)
+{
+	// Add a single-shape actor to the scene
+	NxActorDesc actorDesc;
+	NxBodyDesc bodyDesc;
+
+	// The actor has one shape, a sphere
+	NxSphereShapeDesc sphereDesc;
+	sphereDesc.radius = radius;
+	sphereDesc.localPose.t = NxVec3(0,radius,0);
+	actorDesc.shapes.pushBack(&sphereDesc);
+
+	bodyDesc.mass = 1.0;
+	actorDesc.body = &bodyDesc;
+
+	actorDesc.globalPose.t = pos;
+	NxActor* ret = mScene->createActor(actorDesc);	
+	ret->raiseBodyFlag(NX_BF_KINEMATIC);
+	ret->raiseActorFlag(NX_AF_DISABLE_COLLISION);
+
+	return ret;
 }
 
 NxFixedJoint* Actors::CreateFixedJoint(NxActor* a0, NxActor* a1, const NxVec3& globalAnchor, const NxVec3& globalAxis)

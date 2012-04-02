@@ -6,6 +6,10 @@ class NxActor;
 
 #define SHAPE_DEFAULT_COLOR NxVec3(0.7f, 0.7f, 0.7f)
 
+void beginText();
+void endText();
+void drawText(double x, double y, char* str);
+void PrintText(char * String, float x, float y, float r, float g, float B);
 void RenderBox(NxF32 size);
 
 void SetupGLMatrix(const NxVec3& pos, const NxMat33& orient);

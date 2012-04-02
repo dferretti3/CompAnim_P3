@@ -15,7 +15,7 @@ int mx = 0;
 int my = 0;
 
 // Camera globals
-NxVec3 gCameraPos(0,2,-8);
+NxVec3 gCameraPos(0,2,-12);
 NxVec3 gCameraForward(0,0,1);
 NxVec3 gCameraRight(-1,0,0);
 const NxReal gCameraSpeed = 0.02;
@@ -32,18 +32,15 @@ bool bPause = false;
 void ProcessKeys()
 {
 	// Process keys
-<<<<<<< HEAD
-	NxVec3 pos = player->getGlobalPosition();
-=======
+	//NxVec3 pos = player->getGlobalPosition();
 	NxVec3 pos = gCameraPos;
 	NxQuat q; 
 	NxMat34 rot;
 	float theta = acos( NxVec3(0, 0, 1).dot(gCameraForward)) * 180/NxPiF32;
 	if(gCameraForward.x < 0 || (gCameraForward.x < 0 && gCameraForward.z < 0)) theta = 360-theta;
-	printf("%f\n", theta);
+	//printf("%f\n", theta);
 	q.fromAngleAxis(theta+90, NxVec3(0, 1, 0));
 	rot.M.fromQuat(q);
->>>>>>> 80fe4d322aa02fb49117b897effda6c55b94900a
 	for (int i = 0; i < MAX_KEYS; i++)
 	{	
 		if (!gKeys[i])  { continue; }
@@ -79,10 +76,10 @@ void ProcessKeys()
 			case 'q':{ gCameraPos += NxVec3(0,1,0)*gCameraSpeed; break; }
 		}
 	}
-<<<<<<< HEAD
-	player->setGlobalPosition(pos);
-	gCameraPos = gSim->player->getGlobalPosition() + gCameraForward*-3;
-=======
+//<<<<<<< HEAD
+//	player->setGlobalPosition(pos);
+//	gCameraPos = gSim->player->getGlobalPosition() + gCameraForward*-3;
+//=======
 	
 	player->setGlobalPose(rot);
 
@@ -95,7 +92,7 @@ void ProcessKeys()
 	gCameraForward.normalize();
 	gCameraRight.cross(gCameraForward,NxVec3(0,1,0));
 	
->>>>>>> 80fe4d322aa02fb49117b897effda6c55b94900a
+//>>>>>>> 80fe4d322aa02fb49117b897effda6c55b94900a
 }
 
 void SetupCamera()
@@ -122,7 +119,7 @@ void RenderCallback()
 	SetupCamera();
     if (gSim){
 		gSim->RenderScene();
-		gSim->ProcessKeys(gKeys);
+		gSim->ProcessKeys(gKeys,gCameraForward);
 	}
 		
     glutSwapBuffers();
@@ -146,6 +143,8 @@ void KeyboardCallback(unsigned char key, int x, int y)
 	{
 		case 27 : { exit(0); break; }
 		case 'p': { bPause = !bPause; getElapsedTime(); break; }
+		case 'n': { gSim->nextLevel(); break; }
+		case 'r': { gSim->restartLevel(); break; }
 		default: { break; }
 	}
 }
