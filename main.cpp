@@ -7,7 +7,7 @@
 using namespace std;
 
 static Simulator *gSim = NULL;
-static NxActor *player = NULL;
+//static NxActor *player = NULL;
 
 // Display globals
 int gMainHandle;
@@ -32,7 +32,7 @@ bool bPause = false;
 void ProcessKeys()
 {
 	// Process keys
-	NxVec3 pos = player->getGlobalPosition();
+	NxVec3 pos = gSim->player->getGlobalPosition();
 	for (int i = 0; i < MAX_KEYS; i++)
 	{	
 		if (!gKeys[i])  { continue; }
@@ -48,8 +48,8 @@ void ProcessKeys()
 			case 'q':{ gCameraPos += NxVec3(0,1,0)*gCameraSpeed; break; }
 		}
 	}
-	player->setGlobalPosition(pos);
-	gCameraPos = player->getGlobalPosition() + gCameraForward*-3;
+	gSim->player->setGlobalPosition(pos);
+	gCameraPos = gSim->player->getGlobalPosition() + gCameraForward*-3;
 }
 
 void SetupCamera()
@@ -175,7 +175,7 @@ int main(int argc, char** argv)
 	// Initialize physics scene and start the application main loop if scene was created
 	if (gSim->InitNx()){
 		gSim->CreateScene();
-		player = gSim->getSelectedActor();
+		//player = gSim->getSelectedActor();
 		atexit(ExitCallback);
 		glutMainLoop();
 	}
